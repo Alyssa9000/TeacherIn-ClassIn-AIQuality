@@ -1,0 +1,3314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翼鸥教育 | TeacherIn × ClassIn LMS × AI教学质量管控 解决方案</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ===== COLOR SYSTEM ===== */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --bg-card-hover: #0d1f0d;
+            --accent: #AAFF00;
+            --accent-dark: #003300;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --error: #FF4444;
+            --success: #AAFF00;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-dots {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(170, 255, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-dot.active, .nav-dot:hover {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            transform: scale(1.3);
+        }
+
+        /* ===== SECTION BASE ===== */
+        .section {
+            min-height: 100vh;
+            padding: 80px 60px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .section-header {
+            margin-bottom: 48px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== LOGO ===== */
+        .logo-corner {
+            position: fixed;
+            top: 24px;
+            right: 60px;
+            z-index: 999;
+            opacity: 0.9;
+        }
+        .logo-corner img {
+            width: 120px;
+            height: auto;
+        }
+
+        /* ===== P01 COVER ===== */
+        #cover {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        #cover canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .cover-content {
+            position: relative;
+            z-index: 1;
+        }
+        .cover-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+        .cover-title .char {
+            opacity: 0;
+            display: inline-block;
+        }
+        .cover-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .cover-subtitle.visible { opacity: 1; }
+        .cover-product-line {
+            margin-top: 24px;
+            font-size: 1rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.8s ease 0.3s;
+        }
+        .cover-product-line.visible { opacity: 1; }
+        
+        /* ===== P02 INDUSTRY ===== */
+        .industry-block {
+            margin-bottom: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .industry-block:hover {
+            background: var(--bg-card-hover);
+        }
+        .industry-block-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        .industry-block li {
+            list-style: none;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 16px;
+            position: relative;
+            line-height: 1.7;
+        }
+        .industry-block li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        .chart-container {
+            margin: 16px 0;
+            padding: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            height: 220px;
+        }
+        .chart-container svg {
+            width: 100%;
+            height: 100%;
+        }
+        .highlight-box {
+            display: inline-block;
+            background: var(--accent);
+            color: #0a0a0a;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-top: 12px;
+        }
+
+        /* ===== P03 PAIN POINTS ===== */
+        .pain-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .pain-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .pain-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .pain-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+        }
+        .pain-card:hover::before { opacity: 1; }
+        .pain-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .pain-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(170, 255, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .pain-keyword {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .pain-severity {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 4px;
+        }
+        .pain-severity span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--error);
+        }
+        .pain-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .pain-card:hover .pain-details {
+            max-height: 300px;
+        }
+        .pain-details li {
+            padding: 6px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            list-style: none;
+            padding-left: 16px;
+            position: relative;
+        }
+        .pain-details li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        .pain-summary {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== P04 SOLUTION DIRECTION ===== */
+        .solution-direction {
+            text-align: center;
+        }
+        .big-slogan {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 48px;
+        }
+        .compare-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 48px;
+        }
+        .compare-box {
+            flex: 1;
+            max-width: 400px;
+            padding: 32px;
+            border-radius: 12px;
+            text-align: left;
+        }
+        .compare-box.old {
+            background: rgba(50, 50, 50, 0.5);
+            border: 1px dashed #555;
+        }
+        .compare-box.new {
+            background: rgba(13, 31, 13, 0.8);
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(170, 255, 0, 0.1);
+        }
+        .compare-box h4 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+        .compare-box.new h4 { color: var(--accent); }
+        .compare-box li {
+            list-style: none;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .compare-arrow {
+            font-size: 2rem;
+            color: var(--accent);
+            animation: arrowPulse 2s infinite;
+        }
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.5; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(8px); }
+        }
+        .solution-bullets {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .solution-bullets li {
+            list-style: none;
+            padding: 12px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--text-secondary);
+        }
+        .solution-bullets li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        .solution-bullets strong { color: var(--text-primary); }
+
+        /* ===== P05 ARCHITECTURE ===== */
+        .triangle-layout-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 560px;
+            margin: 100px auto 40px;
+        }
+        .triangle-svg-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        .arch-node-card {
+            position: absolute;
+            width: 280px;
+            background: rgba(26, 26, 26, 0.9);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .arch-node-card h3 { color: var(--accent); font-size: 1.1rem; margin-bottom: 8px; text-align: center; }
+        .node-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; text-align: center; }
+        .arch-node-card ul { list-style: none; padding: 0; text-align: center; }
+        .arch-node-card li { font-size: 0.82rem; color: var(--text-secondary); padding: 3px 0; position: relative; text-align: center; }
+        .arch-node-card li::before { content: none; }
+
+        /* 顶点定位：与 SVG 坐标 (500,67), (800,459), (200,459) 匹配 */
+        .node-top { top: 67px; left: 500px; }
+        .node-right { top: 459px; left: 800px; }
+        .node-left { top: 459px; left: 200px; }
+
+        .triangle-data-label {
+            position: absolute;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+        }
+        /* 边线中间定位 */
+        .label-top-to-right { top: 263px; left: 650px; }
+        .label-right-to-left { top: 485px; left: 500px; }
+        .label-left-to-top { top: 263px; left: 350px; }
+
+        /* ===== P06 TEACHERIN ===== */
+        .module-layout {
+            display: flex;
+            gap: 48px;
+            align-items: flex-start;
+        }
+        .module-left {
+            flex: 1;
+            min-width: 300px;
+        }
+        .module-right {
+            flex: 1.5;
+        }
+        .module-gallery {
+            position: relative;
+            height: 584px;
+            margin-top: 14px;
+        }
+        .module-gallery img {
+            position: absolute;
+            width: 92%;
+            height: 260px;
+            object-fit: cover;
+            object-position: center center;
+            border-radius: 12px;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
+            background: var(--bg-card);
+            cursor: pointer;
+        }
+        .module-gallery img:nth-child(1) {
+            top: 0;
+            left: 0;
+            z-index: 3;
+            object-position: 47% center;
+        }
+        .module-gallery img:nth-child(2) {
+            top: 180px;
+            right: 0;
+            z-index: 2;
+        }
+        .module-gallery img:nth-child(3) {
+            top: 350px;
+            left: 0;
+            z-index: 1;
+            object-position: 53% center;
+        }
+        .module-gallery img.is-active {
+            z-index: 10;
+        }
+        .product-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: #0a0a0a;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+        .capability-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            min-height: 172px;
+        }
+        .capability-card:hover {
+            background: var(--bg-card-hover);
+            border-left-color: var(--accent);
+        }
+        .capability-num {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .capability-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .capability-card li {
+            list-style: none;
+            padding: 4px 0;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            padding-left: 16px;
+            position: relative;
+        }
+        .capability-card li::before {
+            content: "·";
+            position: absolute;
+            left: 4px;
+            color: var(--accent);
+        }
+
+        /* ===== P07 CASE FLOW ===== */
+        .flow-steps {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .flow-step-num {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .flow-step-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        .flow-step-content {
+            text-align: left;
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+        }
+        .flow-step-content li {
+            list-style: none;
+            padding: 3px 0;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.45;
+            padding-left: 14px;
+            position: relative;
+        }
+        .flow-step-content li::before {
+            content: "·";
+            position: absolute;
+            left: 2px;
+            color: var(--accent);
+        }
+        .flow-connector {
+            position: absolute;
+            top: 24px;
+            right: -12px;
+            width: 24px;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.5;
+        }
+        .flow-value {
+            position: relative;
+            max-width: 760px;
+            margin: 36px auto 0;
+            padding: 20px 32px 0;
+            text-align: center;
+            background: none;
+            border: 0;
+            border-radius: 0;
+        }
+        .flow-value::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 72%;
+            height: 2px;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            box-shadow: 0 0 18px rgba(170,255,0,0.35);
+        }
+        .flow-value h4 {
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .flow-value li {
+            list-style: none;
+            padding: 4px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ===== P08 CLASSIN LMS ===== */
+        .lms-layout {
+            display: flex;
+            gap: 48px;
+            align-items: stretch;
+        }
+        .lms-screenshot {
+            flex: 1;
+            min-height: 470px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+        .lms-screenshot .placeholder {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 24px;
+        }
+        .lms-gallery {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 470px;
+        }
+        .lms-gallery img {
+            position: absolute;
+            width: 78%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+            cursor: pointer;
+        }
+        .lms-gallery img:first-child { top: 22px; left: 22px; z-index: 2; }
+        .lms-gallery img:last-child { right: 22px; bottom: 22px; z-index: 1; }
+        .lms-gallery img.is-active { z-index: 10; }
+        .lms-content {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 28px;
+            border-left: 3px solid var(--accent);
+        }
+        .lms-content h4 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            margin-top: 20px;
+        }
+        .lms-content h4:first-child { margin-top: 0; }
+        .lms-content li {
+            list-style: none;
+            padding: 6px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 16px;
+            position: relative;
+        }
+        .lms-content li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        .lms-compare {
+            margin-top: 32px;
+            padding: 20px;
+            background: rgba(170, 255, 0, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .lms-compare .old {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+        .lms-compare .new {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ===== P09 AI QUALITY ===== */
+        .ai-layout {
+            display: flex;
+            gap: 48px;
+            align-items: stretch;
+        }
+        .ai-panel {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.3s;
+            min-height: 300px;
+        }
+        .ai-panel:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(170, 255, 0, 0.1);
+        }
+        .ai-panel-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        .ai-panel li {
+            list-style: none;
+            padding: 6px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 16px;
+            position: relative;
+        }
+        .ai-panel li::before {
+            content: "·";
+            position: absolute;
+            left: 4px;
+            color: var(--accent);
+        }
+        .ai-score {
+            text-align: center;
+            margin: 24px 0;
+        }
+        .ai-score-num {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .ai-score-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .radar-container {
+            width: 260px;
+            height: 260px;
+            margin: 16px auto;
+        }
+        .ai-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 16px;
+            background: rgba(170, 255, 0, 0.05);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        /* ===== P10 TEMPLATE ===== */
+        .template-layout {
+            display: flex;
+            gap: 28px;
+            min-height: 560px;
+            align-items: stretch;
+        }
+        .template-left {
+            flex: 0 0 500px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 16px;
+            border: 1px solid #333;
+        }
+        .template-report-crop {
+            width: 100%;
+            height: 360px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+            background: #111;
+            scroll-behavior: smooth;
+        }
+        .template-report-crop img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            object-position: top center;
+            display: block;
+        }
+        .template-agent-shot {
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 180px;
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+            background: #111;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .template-agent-shot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .template-agent-demo {
+            width: 100%;
+            height: 100%;
+            min-height: 180px;
+            padding: 10px;
+            background: linear-gradient(180deg, #f7f7f7 0%, #f4f4f4 100%);
+            color: #202020;
+            font-family: -apple-system, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        .template-agent-preview-strip {
+            height: 30px;
+            border-radius: 9px;
+            background: #eeeeee;
+            border: 1px solid #e2e2e2;
+            margin-bottom: 8px;
+            opacity: .8;
+        }
+        .template-agent-preview-strip::before {
+            content: '';
+            display: block;
+            width: 66%;
+            height: 10px;
+            margin: 9px 0 0 10px;
+            border-radius: 6px;
+            background: #e1e1e1;
+        }
+        .template-ai-analysis {
+            background: #efefef;
+            border: 1px solid #e6e6e6;
+            border-radius: 12px;
+            padding: 10px 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,.06);
+        }
+        .template-ai-analysis-hd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .template-ai-analysis-title,
+        .template-ai-select-label {
+            font-size: 15px;
+            color: #202020;
+            font-weight: 500;
+        }
+        .template-ai-toggle {
+            width: 46px;
+            height: 27px;
+            border-radius: 16px;
+            position: relative;
+            background: #d9d9d9;
+            transition: background .35s ease;
+        }
+        .template-ai-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 23px;
+            height: 23px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,.16);
+            transition: left .35s ease;
+        }
+        .template-ai-toggle.on { background: #44c16a; }
+        .template-ai-toggle.on::after { left: 21px; }
+        .template-ai-desc {
+            font-size: 12px;
+            color: #8b8b8b;
+            line-height: 1.45;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(3px);
+            transition: all .35s ease;
+        }
+        .template-ai-desc.show { opacity: 1; transform: translateY(0); }
+        .template-ai-select-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(3px);
+            transition: all .35s ease;
+        }
+        .template-ai-select-row.show { opacity: 1; transform: translateY(0); }
+        .template-ai-chip,
+        .template-ai-option-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .template-ai-chip {
+            font-size: 14px;
+            color: #202020;
+            font-weight: 600;
+        }
+        .template-ai-avatar {
+            width: 26px;
+            height: 26px;
+            flex: 0 0 26px;
+            border-radius: 50%;
+            background: conic-gradient(from 80deg, #2cc7d0, #2d68cf, #8f55d9, #2cc7d0);
+            border: 1px solid rgba(255,255,255,.7);
+        }
+        .template-ai-dropdown {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: max-height .45s ease, opacity .3s ease, transform .3s ease;
+        }
+        .template-ai-dropdown.open {
+            max-height: 250px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .template-ai-option {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            border-bottom: 1px solid #efefef;
+            transition: background .25s ease;
+        }
+        .template-ai-option:last-child { border-bottom: none; }
+        .template-ai-option-name {
+            font-size: 14px;
+            color: #292929;
+            white-space: nowrap;
+        }
+        .template-ai-option.active { background: #ececec; }
+        .template-ai-option.plus .template-ai-option-name {
+            font-weight: 500;
+            color: #303030;
+        }
+        .template-right {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            align-content: stretch;
+        }
+        .template-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 28px 30px;
+            border-top: 3px solid var(--accent);
+            min-height: 116px;
+        }
+        .template-card h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        .template-card p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+        .template-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .template-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333;
+        }
+        .template-dots span.active { background: var(--accent); }
+
+        /* ===== P11 AI RISK MONITOR ===== */
+        .risk-layout {
+            display: grid;
+            grid-template-columns: 0.95fr 1.25fr;
+            gap: 36px;
+            align-items: stretch;
+        }
+        .risk-cards {
+            display: grid;
+            gap: 16px;
+        }
+        .risk-card {
+            background: rgba(26, 26, 26, 0.78);
+            border-left: 3px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px 22px;
+        }
+        .risk-card h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .risk-card p {
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            line-height: 1.65;
+        }
+        .risk-score {
+            margin-top: 18px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+        .risk-score-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .risk-score-bar {
+            height: 14px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #73d13d 0%, #aaff00 30%, #fadb14 58%, #fa8c16 78%, #ff4d4f 100%);
+            box-shadow: 0 0 18px rgba(170,255,0,0.16);
+        }
+        .risk-score-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 8px;
+        }
+        .risk-screens {
+            position: relative;
+            min-height: 500px;
+        }
+        .risk-screens img {
+            position: absolute;
+            width: 76%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.38);
+            background: #111;
+            cursor: pointer;
+        }
+        .risk-screens img:first-child {
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        .risk-screens img:last-child {
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+        .risk-screens img.is-active {
+            z-index: 10;
+        }
+        .risk-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 28px;
+        }
+        .risk-feature {
+            background: rgba(170,255,0,0.06);
+            border: 1px solid rgba(170,255,0,0.18);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+        .risk-feature strong {
+            display: block;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        /* ===== P12 FLYWHEEL ===== */
+        .flywheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .flywheel {
+            position: relative;
+            width: 640px;
+            height: 640px;
+            margin: 0 auto;
+        }
+        .flywheel-ring {
+            position: absolute;
+            border: 3px solid rgba(170, 255, 0, 0.3);
+            border-radius: 50%;
+            animation: flywheelSpin 20s linear infinite;
+        }
+        .flywheel-ring.outer { inset: 0; }
+        .flywheel-ring.inner { inset: 146px; border-color: rgba(170, 255, 0, 0.5); animation-duration: 15s; }
+        .flywheel-ring::before {
+            content: '▶';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            color: var(--accent);
+            font-size: 1rem;
+        }
+        @keyframes flywheelSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .flywheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            animation: glowPulse 3s infinite;
+        }
+        .flywheel-center-text {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .flywheel-center-sub {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(170, 255, 0, 0.3); }
+            50% { text-shadow: 0 0 30px rgba(170, 255, 0, 0.8); }
+        }
+        .flywheel-node {
+            position: absolute;
+            width: 170px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: rgba(18, 18, 18, 0.88);
+            border: 1px solid rgba(170, 255, 0, 0.35);
+            border-radius: 10px;
+            padding: 10px 8px;
+        }
+        .flywheel-node:hover {
+            transform: scale(1.1);
+        }
+        .flywheel-node-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+        .flywheel-node-product {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+        .flywheel-node-desc {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .flywheel-node.inner-node.n1 { top: 116px; left: calc(50% - 85px); }
+        .flywheel-node.inner-node.n2 { top: calc(50% - 44px); right: 42px; }
+        .flywheel-node.inner-node.n3 { bottom: 116px; left: calc(50% - 85px); }
+        .flywheel-node.inner-node.n4 { top: calc(50% - 44px); left: 42px; }
+        .flywheel-step {
+            position: absolute;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(170, 255, 0, 0.2);
+            padding: 6px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+        .flywheel-step.s1 { top: -14px; left: calc(50% - 36px); }
+        .flywheel-step.s2 { top: 126px; right: 22px; }
+        .flywheel-step.s3 { top: calc(50% + 30px); right: -88px; }
+        .flywheel-step.s4 { bottom: 126px; right: 22px; }
+        .flywheel-step.s5 { bottom: -14px; left: calc(50% - 44px); }
+        .flywheel-step.s6 { bottom: 126px; left: 22px; }
+        .flywheel-step.s7 { top: 126px; left: 22px; }
+        .flywheel-bottom {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .flywheel-bottom-text {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .flywheel-chain {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 16px 24px;
+            background: rgba(170, 255, 0, 0.05);
+            border-radius: 8px;
+            max-width: 800px;
+        }
+        
+        /* ===== P13 HARDWARE ===== */
+        .hw-layout {
+            display: grid;
+            grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.35fr) minmax(220px, 0.72fr);
+            gap: 24px;
+            align-items: center;
+        }
+        .hw-scene {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 0;
+        }
+        .hw-scene img {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 52vh;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 1px solid #2b2b2b;
+            box-shadow: 0 22px 54px rgba(0,0,0,0.36);
+        }
+        .hw-note {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.96), rgba(18, 28, 18, 0.78));
+            border: 1px solid rgba(170, 255, 0, 0.16);
+            border-left: 3px solid var(--accent);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 18px 42px rgba(0,0,0,0.28);
+        }
+        .hw-note h4 {
+            color: var(--accent);
+            font-size: 1.08rem;
+            margin-bottom: 14px;
+        }
+        .hw-note li {
+            list-style: none;
+            padding: 7px 0 7px 18px;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.58;
+            position: relative;
+        }
+        .hw-note li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 16px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px rgba(170,255,0,0.45);
+        }
+        .hw-product-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        .hw-product-card:hover {
+            background: var(--bg-card-hover);
+            border-left-color: var(--accent);
+        }
+        .hw-product-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .hw-product-card li {
+            list-style: none;
+            padding: 4px 0;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            padding-left: 16px;
+            position: relative;
+        }
+        .hw-product-card li::before {
+            content: "·";
+            position: absolute;
+            left: 4px;
+            color: var(--accent);
+        }
+        .hw-value {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: rgba(170, 255, 0, 0.05);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-left: 2px solid var(--accent);
+        }
+        .hw-footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* ===== P14 CASE STUDY 1 ===== */
+        .case-bg {
+            padding: 22px 24px;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(13, 31, 13, 0.55));
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-bottom: 18px;
+            line-height: 1.8;
+            border: 1px solid rgba(170, 255, 0, 0.18);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+        }
+        .case-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+            gap: 18px;
+            align-items: stretch;
+            margin-top: 18px;
+        }
+        .case-left-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 14px;
+            min-height: 0;
+        }
+        .case-column {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+        .case-column-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 14px;
+            letter-spacing: 0.02em;
+        }
+        .case-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .case-list li {
+            padding: 9px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 16px;
+            position: relative;
+            line-height: 1.78;
+        }
+        .case-list li::before {
+            content: '•';
+            position: absolute;
+            left: 2px;
+            color: var(--accent);
+        }
+        .case-content-panel {
+            justify-content: flex-start;
+            flex: 0 1 auto;
+            min-height: 150px;
+            padding: 18px 20px;
+        }
+        .case-image-panel {
+            padding: 0;
+            overflow: visible;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            min-height: 0;
+        }
+        .case-image-panel img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 58vh;
+            object-fit: contain;
+            align-self: stretch;
+            border-radius: 14px;
+            border: 1px solid #2b2b2b;
+            background: #111;
+            display: block;
+        }
+        .case-metrics-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            align-items: start;
+            margin-top: 0;
+            padding-top: 0;
+        }
+        .case-metric {
+            text-align: center;
+            padding: 0 6px;
+            background: transparent;
+        }
+        .case-metric-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--accent);
+            text-shadow: 0 0 18px rgba(170,255,0,0.12);
+            margin-bottom: 8px;
+        }
+        .case-metric-label {
+            font-size: 0.84rem;
+            color: rgba(235,235,235,0.78);
+            line-height: 1.55;
+        }
+        .case-metric-note {
+            margin-top: 4px;
+            font-size: 0.72rem;
+            color: rgba(235,235,235,0.52);
+            line-height: 1.4;
+        }
+        .case-metric,
+        .case-metric * {
+            background: transparent !important;
+        }
+        #case1 .case-quote {
+            position: relative;
+            padding-left: 42px;
+            border-left: 3px solid var(--accent);
+        }
+        #case1 .case-quote::before {
+            content: "“";
+            position: absolute;
+            left: 14px;
+            top: 18px;
+            color: var(--accent);
+            font-family: Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* ===== P15 CASE STUDY 2 ===== */
+        #case2 .case-bg {
+            padding: 18px 22px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #cfcfcf;
+            font-size: 0.86rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+        #case2 .case-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(360px, 0.9fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+        #case2 .case-quotes {
+            background: rgba(10,10,10,0.82);
+            border-radius: 12px;
+            padding: 20px 18px 18px;
+            border: 1px solid rgba(255,255,255,0.05);
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        #case2 .case-quote {
+            position: relative;
+            padding: 16px 16px 16px 32px;
+            margin-bottom: 14px;
+            background: rgba(20,20,20,0.68);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            color: #d8d8d8;
+            font-size: 0.83rem;
+            font-style: italic;
+            line-height: 1.8;
+        }
+        #case2 .case-quote::before {
+            content: '\201C';
+            position: absolute;
+            left: 10px;
+            top: 3px;
+            color: var(--accent);
+            font-size: 2rem;
+            font-style: normal;
+        }
+        #case2 .case-quotes h4 {
+            color: var(--accent);
+            font-size: 0.92rem;
+            margin: 18px 0 8px;
+        }
+        #case2 .case-quotes ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #case2 .case-quotes li {
+            padding: 4px 0;
+            color: #cfcfcf;
+            font-size: 0.84rem;
+            line-height: 1.65;
+        }
+        #case2 .case-quotes li::before {
+            content: '•';
+            color: var(--accent);
+            margin-right: 8px;
+        }
+        #case2 .case-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            align-content: stretch;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        #case2 .metric-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 18px 12px 16px;
+            min-height: 0;
+            height: 100%;
+            text-align: center;
+            border-top: 4px solid var(--accent);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #case2 .metric-num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+        #case2 .metric-label {
+            font-size: 0.75rem;
+            color: #d0d0d0;
+            line-height: 1.55;
+        }
+        #case2 .metric-card:nth-child(4) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        #case2 .case-gallery {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+        #case2 .case-gallery img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+            display: block;
+        }
+
+        /* ===== P16 VALUE ===== */
+        .value-stair-wrap {
+            display: flex;
+            gap: 16px;
+            margin-top: 28px;
+            max-width: 1180px;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: stretch;
+        }
+        .value-stair-line {
+            display: none;
+        }
+        .value-step {
+            flex: 1 1 0;
+            min-width: 0;
+            min-height: 240px;
+            background: linear-gradient(135deg, rgba(20,20,20,0.96), rgba(26,26,26,0.82));
+            border-radius: 14px;
+            padding: 18px 18px 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+        }
+        .value-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent), rgba(170,255,0,0.15));
+        }
+        .value-step:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-6px);
+        }
+        .value-step-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .value-step-icon {
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+        .value-step-tag {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .value-step-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .value-step-content ul {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        .value-step-content li {
+            list-style: none;
+            padding: 4px 0 4px 14px;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            line-height: 1.42;
+            position: relative;
+        }
+        .value-step-content li::before {
+            content: '·';
+            position: absolute;
+            left: 2px;
+            color: var(--accent);
+        }
+        .value-footer {
+            text-align: center;
+            margin-top: 34px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        @media (max-width: 1200px) {
+            .value-stair-wrap {
+                display: block;
+                max-width: 100%;
+            }
+            .value-step {
+                width: 100%;
+                min-height: auto;
+                margin: 0 0 16px;
+            }
+        }
+
+        /* ===== P17 DIFFERENTIATION ===== */
+        .diff-quote {
+            text-align: center;
+            padding: 20px 32px;
+            background: var(--accent);
+            color: #0a0a0a;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+        .diff-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+        .diff-card {
+            perspective: 1200px;
+            min-height: 170px;
+        }
+        .diff-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 170px;
+            transform-style: preserve-3d;
+            transition: transform 0.65s ease;
+            cursor: pointer;
+        }
+        .diff-card.is-flipped .diff-card-inner {
+            transform: rotateY(180deg);
+        }
+        .diff-card-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 20px 22px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+            display: flex;
+            flex-direction: column;
+        }
+        .diff-card-front {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .diff-card-back {
+            transform: rotateY(180deg);
+            justify-content: center;
+        }
+        .diff-card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+        .diff-card-back ul {
+            margin: 0;
+            padding: 0;
+        }
+        .diff-card-back li {
+            list-style: none;
+            padding: 4px 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            padding-left: 14px;
+            position: relative;
+        }
+        .diff-card-back li::before {
+            content: "·";
+            position: absolute;
+            left: 2px;
+            color: var(--accent);
+        }
+        .diff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+        .diff-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid #333;
+        }
+        .diff-table td {
+            padding: 14px 16px;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #1a1a1a;
+            transition: background 0.3s;
+        }
+        .diff-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+        .diff-table .check { color: var(--accent); font-weight: 700; }
+        .diff-table .cross { color: var(--error); font-weight: 700; }
+
+
+        /* ===== P18 BACK COVER ===== */
+        #backcover {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        #backcover canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .backcover-content {
+            position: relative;
+            z-index: 1;
+        }
+        .backcover-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            animation: glowPulse 3s infinite;
+        }
+        .backcover-slogan {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        .backcover-products {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+        .backcover-stats {
+            display: flex;
+            gap: 48px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .backcover-stat {
+            text-align: center;
+        }
+        .backcover-stat-num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .backcover-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .backcover-contact {
+            margin-top: 32px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ===== COVER ELEMENTS ===== */
+        .cover-content {
+            position: relative;
+            z-index: 1;
+        }
+        .cover-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            min-height: 3.5rem;
+        }
+        .cover-title .char {
+            opacity: 0;
+            display: inline-block;
+        }
+        .cover-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .cover-subtitle.visible {
+            opacity: 1;
+        }
+        .cover-product-line {
+            font-size: 1rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.8s ease 0.3s;
+        }
+        .cover-product-line.visible {
+            opacity: 1;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+
+        /* ===== PLACEHOLDER ===== */
+        .img-placeholder {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 1px dashed #444;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            min-height: 200px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .section { padding: 60px 32px; }
+            .pain-grid { grid-template-columns: 1fr; }
+            .module-layout, .lms-layout, .ai-layout, .hw-layout, .case-layout { flex-direction: column; }
+            .arch-container { flex-direction: column; align-items: center; }
+            .arch-triangle { min-height: auto; display: grid; gap: 16px; }
+            .arch-line, .arch-flow-dot, .arch-flow-label { display: none; }
+            .arch-card.pos-top, .arch-card.pos-left, .arch-card.pos-right { position: static; transform: none; width: 100%; max-width: none; }
+            .compare-container { flex-direction: column; }
+            .flow-steps { flex-direction: column; }
+            .flywheel { width: 340px; height: 340px; }
+            .flywheel-ring.inner { inset: 64px; }
+            .flywheel-node { width: 132px; padding: 8px 6px; }
+            .flywheel-node.inner-node.n1 { top: 44px; left: calc(50% - 66px); }
+            .flywheel-node.inner-node.n2 { top: calc(50% - 42px); right: 38px; }
+            .flywheel-node.inner-node.n3 { bottom: 44px; left: calc(50% - 66px); }
+            .flywheel-node.inner-node.n4 { top: calc(50% - 42px); left: 38px; }
+            .flywheel-step { display: none; }
+            .risk-layout { grid-template-columns: 1fr; }
+            .risk-feature-grid { grid-template-columns: 1fr; }
+            .risk-screens { min-height: 420px; }
+            .template-layout { flex-direction: column; min-height: auto; }
+            .template-right { grid-template-columns: 1fr; }
+            .diff-grid { grid-template-columns: 1fr; }
+            .nav-dots { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Dots -->
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- ClassIn Logo -->
+    <div class="logo-corner">
+        <img src="./新logo.png" alt="ClassIn" style="width:120px;height:auto;">
+    </div>
+
+    <!-- ==================== P01 · COVER ==================== -->
+    <section class="section" id="cover">
+        <canvas id="particleCanvas1"></canvas>
+        <div class="cover-content">
+            <h1 class="cover-title" id="coverTitle">重塑教学质量，驱动规模增长</h1>
+            <p class="cover-subtitle" id="coverSubtitle">专为教培机构打造的"教研-教学-质检"全链路数字化底座</p>
+            <p class="cover-product-line" id="coverProduct">TeacherIn × ClassIn LMS × AI教学质量管控 解决方案</p>
+        </div>
+    </section>
+
+    <!-- ==================== P02 · INDUSTRY ==================== -->
+    <section class="section industry-section" id="industry">
+        <div class="section-header">
+            <h2 class="section-title">存量时代已至：新时代、新逻辑、新命题</h2>
+        </div>
+
+        <div class="industry-block fade-in">
+            <h3 class="industry-block-title">一、新时代：三重结构性变化正在重塑行业格局</h3>
+            <div class="chart-container">
+                <svg id="birthChart" viewBox="0 0 760 220"></svg>
+            </div>
+            <ul>
+                <li>出生人口断崖下滑，生源池不可逆收窄 — 2025年全国出生人口<strong style="color:var(--accent)">792万</strong>，创1949年以来历史最低，较2016年峰值<strong style="color:var(--accent)">1883万</strong>下降逾58%</li>
+                <li>流量不再自然 - 红利彻底枯竭，获客成本飙升，生源不再自然流入，每一个学生都需要靠实力去“抢”</li>
+                <li>增量时代的打法已经失效 — 靠广告砸流量、靠低价引新客的获客逻辑，在生源总量收缩的背景下成本越来越高、回报越来越低</li>
+            </ul>
+        </div>
+
+        <div class="industry-block fade-in stagger-1">
+            <h3 class="industry-block-title">二、新逻辑：增长的发动机从"市场部"转移到"教学部"</h3>
+            <ul>
+                <li>头部机构已用财报验证这一判断 — 新东方管理层明确表示"更加注重产品质量的提升，这提高了学生的留存率"；好未来直接披露续班率稳定在80%以上</li>
+                <li>续班率驱动的增长飞轮正在取代广告驱动 — 控制营销费用、依靠续班率提升实现增长，是头部机构在存量时代选择的核心路径</li>
+                <li>教学质量管控能力越标准、越可复制，机构在存量竞争中的优势越稳定</li>
+            </ul>
+        </div>
+
+        <div class="industry-block fade-in stagger-2">
+            <h3 class="industry-block-title">三、新命题：教学质量管控，能否成为机构的核心竞争力？</h3>
+            <ul>
+                <li>教研能否标准化沉淀，让好课可复制、不依赖名师？</li>
+                <li>教学过程能否可见可管，让服务承诺真正落地执行？</li>
+                <li>质量评估能否数据化，让管理决策有据可依、持续迭代？</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== P03 · PAIN POINTS ==================== -->
+    <section class="section" id="painpoints">
+        <div class="section-header">
+            <h2 class="section-title">规模化机构的四类共性挑战：教学质量复制为何困难</h2>
+        </div>
+        <div class="pain-grid">
+            <div class="pain-card fade-in">
+                <div class="pain-severity"><span></span><span></span><span></span></div>
+                <div class="pain-card-header">
+                    <div class="pain-icon">📚</div>
+                    <span class="pain-keyword">教研断层</span>
+                </div>
+                <p class="pain-summary">优质经验无法沉淀，名师离职即资产流失</p>
+                <ul class="pain-details">
+                    <li>机构的教研成果存在PPT、U盘或头部教师的脑子里</li>
+                    <li>缺乏标准化的课程库，新老师入职"摸黑上岗"，备课全凭个人感觉</li>
+                    <li>名师一旦离职，多年积累的教研资产随之流失</li>
+                </ul>
+            </div>
+            <div class="pain-card fade-in stagger-1">
+                <div class="pain-severity"><span></span><span></span><span></span></div>
+                <div class="pain-card-header">
+                    <div class="pain-icon">🔒</div>
+                    <span class="pain-keyword">教学黑盒</span>
+                </div>
+                <p class="pain-summary">服务过程难以监控，质量完全依赖教师自律</p>
+                <ul class="pain-details">
+                    <li>课堂一个软件、作业一个软件，数据割裂，机构不知道老师有没有认真批改作业</li>
+                    <li>教师是否真正落实了教学服务，机构几乎无从核查，教学质量完全依赖教师自律</li>
+                </ul>
+            </div>
+            <div class="pain-card fade-in stagger-2">
+                <div class="pain-severity"><span></span><span></span><span></span></div>
+                <div class="pain-card-header">
+                    <div class="pain-icon">⚙️</div>
+                    <span class="pain-keyword">管理低效</span>
+                </div>
+                <p class="pain-summary">质检成本线性增长，评价标准主观模糊</p>
+                <ul class="pain-details">
+                    <li>传统听评课靠教研组长"人肉"搬小板凳去听，抽查率不到5%</li>
+                    <li>评价标准主观模糊，缺少可执行的改进依据，整改推进难度高</li>
+                </ul>
+            </div>
+            <div class="pain-card fade-in stagger-3">
+                <div class="pain-severity"><span></span><span></span><span></span></div>
+                <div class="pain-card-header">
+                    <div class="pain-icon">🚀</div>
+                    <span class="pain-keyword">扩张瓶颈</span>
+                </div>
+                <p class="pain-summary">师资缺口限制规模，新校区面临质量崩盘</p>
+                <ul class="pain-details">
+                    <li>从1个校区到5个校区，最缺的不是资金，而是"合格的老师"</li>
+                    <li>缺乏可复制的师训体系，新校区开业面临教学质量崩盘风险</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== P04 · SOLUTION DIRECTION ==================== -->
+    <section class="section" id="direction">
+        <div class="solution-direction">
+            <h2 class="section-title" style="margin-bottom:16px;">破局之道</h2>
+            <div class="big-slogan fade-in">从"靠人管"到"靠系统管"</div>
+
+            <div class="compare-container fade-in stagger-1">
+                <div class="compare-box old">
+                    <h4>传统管理模式的极限</h4>
+                    <ul>
+                        <li>靠名师带徒弟：产出慢、标准不一、名师易流失</li>
+                        <li>靠教务人肉盯：成本高、覆盖率低、数据滞后</li>
+                    </ul>
+                    <div style="text-align:center;margin-top:16px;color:#555;font-size:0.8rem;">数据孤岛 · 断裂的管理链</div>
+                </div>
+                <div class="compare-arrow">→</div>
+                <div class="compare-box new">
+                    <h4>翼鸥数字化解法</h4>
+                    <ul>
+                        <li><strong style="color:var(--text-primary)">教研 · TeacherIn</strong> — 优质课程从名师私有变为机构资产</li>
+                        <li><strong style="color:var(--text-primary)">行课 · ClassIn LMS</strong> — 每一次互动、每一份作业全程留痕</li>
+                        <li><strong style="color:var(--text-primary)">质管 · AI教学质量管</strong> — AI全量评课，100%覆盖</li>
+                    </ul>
+                    <div style="text-align:center;margin-top:16px;color:var(--accent);font-size:0.8rem;">数据闭环 · 一体化生态</div>
+                </div>
+            </div>
+
+            <div class="fade-in stagger-2" style="margin-top:24px;">
+                <p style="color:var(--text-secondary);font-size:0.95rem;">三者在同一数据生态中自动流转，形成<strong style="color:var(--accent)">数据闭环</strong>，而非三套孤立工具的简单拼凑</p>
+            </div>
+        </div>
+    </section>
+
+        <!-- ==================== P05 · ARCHITECTURE ==================== -->
+    <section class="section" id="p05">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">三位一体产品架构：数据如何在三款产品间自动流转</h2>
+            </div>
+                
+            <div class="triangle-layout-container">
+                <svg class="triangle-svg-overlay" viewBox="0 0 1000 560" preserveAspectRatio="none">
+                    <defs>
+                        <filter id="arrow-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    
+                    <path id="path-t-to-r" d="M 500 67 L 800 459" stroke="#222" stroke-width="2" fill="none" />
+                    <path id="path-r-to-l" d="M 800 459 L 200 459" stroke="#222" stroke-width="2" fill="none" />
+                    <path id="path-l-to-t" d="M 200 459 L 500 67" stroke="#222" stroke-width="2" fill="none" />
+                    
+                    <path d="M 500 67 L 800 459" stroke="var(--accent)" stroke-width="2" stroke-dasharray="10, 12" fill="none" opacity="0.6">
+                        <animate attributeName="stroke-dashoffset" values="220;0" dur="5s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M 800 459 L 200 459" stroke="var(--accent)" stroke-width="2" stroke-dasharray="10, 12" fill="none" opacity="0.6">
+                        <animate attributeName="stroke-dashoffset" values="220;0" dur="5s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M 200 459 L 500 67" stroke="var(--accent)" stroke-width="2" stroke-dasharray="10, 12" fill="none" opacity="0.6">
+                        <animate attributeName="stroke-dashoffset" values="220;0" dur="5s" repeatCount="indefinite" />
+                    </path>
+
+                    <g>
+                        <polygon points="-6,-4 2,0 -6,4" fill="var(--accent)" filter="url(#arrow-glow)">
+                            <animateMotion dur="3.5s" repeatCount="indefinite" rotate="auto">
+                                <mpath href="#path-t-to-r"/>
+                            </animateMotion>
+                        </polygon>
+                    </g>
+                    <g>
+                        <polygon points="-6,-4 2,0 -6,4" fill="var(--accent)" filter="url(#arrow-glow)">
+                            <animateMotion dur="3.5s" repeatCount="indefinite" rotate="auto">
+                                <mpath href="#path-r-to-l"/>
+                            </animateMotion>
+                        </polygon>
+                    </g>
+                    <g>
+                        <polygon points="-6,-4 2,0 -6,4" fill="var(--accent)" filter="url(#arrow-glow)">
+                            <animateMotion dur="3.5s" repeatCount="indefinite" rotate="auto">
+                                <mpath href="#path-l-to-t"/>
+                            </animateMotion>
+                        </polygon>
+                    </g>
+                </svg>
+
+                <div class="arch-node-card node-top">
+                    <h3>TeacherIn</h3>
+                    <p class="node-subtitle">课前 · 教研备课</p>
+                    <ul>
+                        <li>标准课程库搭建</li>
+                        <li>结构化教研沉淀</li>
+                        <li>一键导入ClassIn</li>
+                    </ul>
+                </div>
+
+                <div class="arch-node-card node-right">
+                    <h3>ClassIn LMS</h3>
+                    <p class="node-subtitle">课中 · 教学执行</p>
+                    <ul>
+                        <li>教学活动分发</li>
+                        <li>过程全程留痕</li>
+                        <li>机构行为监控</li>
+                    </ul>
+                </div>
+
+                <div class="arch-node-card node-left">
+                    <h3>AI教学质量管控</h3>
+                    <p class="node-subtitle">课后 · 智能质检</p>
+                    <ul>
+                        <li>全量自动评课</li>
+                        <li>多维度分析报告</li>
+                        <li>精准督导建议</li>
+                    </ul>
+                </div>
+
+                <div class="triangle-data-label label-top-to-right">课程数据</div>
+                <div class="triangle-data-label label-right-to-left">学习行为数据</div>
+                <div class="triangle-data-label label-left-to-top">质检反馈数据</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==================== P06 · TEACHERIN ==================== -->
+    <section class="section" id="teacherin">
+        <div class="section-header">
+            <h2 class="section-title">TeacherIn：教研标准化的"源头治理"</h2>
+        </div>
+
+        <div class="module-layout">
+            <div class="module-left fade-in">
+                <span class="product-tag">课程发现、管理与使用平台</span>
+                <p class="product-desc">专为教育机构的课程资产化与教研协同而设计</p>
+                <div class="module-gallery">
+                    <img src="./teacherin01.png" alt="TeacherIn界面1">
+                    <img src="./teacherin协作.png" alt="TeacherIn界面2">
+                    <img src="./teacherin导入classin.png" alt="TeacherIn界面3">
+                </div>
+            </div>
+            <div class="module-right">
+                <div class="capability-card fade-in stagger-1">
+                    <div class="capability-num">01</div>
+                    <div class="capability-title">标准课程库搭建</div>
+                    <ul>
+                        <li>将分散在各处的教研成果（PPT、讲义、视频、题库）统一汇聚到结构化的课程库中</li>
+                        <li>支持按学科、年级、章节、课型等多维度分类管理，形成机构专属的"课程资产池"</li>
+                        <li>课程内容版本可追溯，历次迭代记录完整保存，教研资产永久沉淀为机构所有</li>
+                    </ul>
+                </div>
+                <div class="capability-card fade-in stagger-2">
+                    <div class="capability-num">02</div>
+                    <div class="capability-title">结构化教研与协同编辑</div>
+                    <ul>
+                        <li>支持多位教师同时在线协同编辑同一份课程，教研组长可实时审核与批注</li>
+                        <li>课程结构标准化：教学目标、重难点、教学活动、课后作业等模块化呈现</li>
+                        <li>优质经验不再存在名师脑子里，而是沉淀为团队共有的可复用资产</li>
+                    </ul>
+                </div>
+                <div class="capability-card fade-in stagger-3">
+                    <div class="capability-num">03</div>
+                    <div class="capability-title">一键导入ClassIn</div>
+                    <ul>
+                        <li>TeacherIn中完成的课程，可一键同步至ClassIn LMS，直接发布为教学活动</li>
+                        <li>教师无需重复上传，备课成果直接转化为授课内容，大幅降低重复劳动</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== P07 · CASE FLOW ==================== -->
+    <section class="section" id="teacherin-case">
+        <div class="section-header">
+            <h2 class="section-title">TeacherIn场景应用：某教育机构产品实施案例</h2>
+            <p class="section-subtitle">某中型教育机构，多学科、多校区运营，教研团队分散，课程资产管理混乱</p>
+        </div>
+
+        <div class="flow-steps">
+            <div class="flow-step fade-in">
+                <div class="flow-step-num">1</div>
+                <div class="flow-step-title">搭建机构课程资源库</div>
+                <div class="flow-step-content">
+                    <ul>
+                        <li>教研负责人在TeacherIn中创建学科课程体系，按年级、章节建立标准化目录结构</li>
+                        <li>将历年积累的优质PPT、讲义、题库统一上传，完成课程资产数字化迁移</li>
+                        <li>设定课程权限分级：核心教研内容仅教研组可编辑，授课内容全体教师可调用</li>
+                    </ul>
+                </div>
+                <div class="flow-connector"></div>
+            </div>
+            <div class="flow-step fade-in stagger-1">
+                <div class="flow-step-num">2</div>
+                <div class="flow-step-title">教师调用标准化内容授课</div>
+                <div class="flow-step-content">
+                    <ul>
+                        <li>新教师入职后，直接在TeacherIn中检索对应年级、学科的标准课程，快速完成备课</li>
+                        <li>授课时一键将课程内容导入ClassIn，直接开展教学活动，无需重复上传</li>
+                        <li>备课时间从平均2小时/节压缩至30分钟/节，新教师快速达到机构教学标准</li>
+                    </ul>
+                </div>
+                <div class="flow-connector"></div>
+            </div>
+            <div class="flow-step fade-in stagger-2">
+                <div class="flow-step-num">3</div>
+                <div class="flow-step-title">课后反馈驱动课程迭代</div>
+                <div class="flow-step-content">
+                    <ul>
+                        <li>教师授课后，将课堂中发现的问题反馈至TeacherIn，提交贡献记录</li>
+                        <li>教研组长审核后更新至课程库，形成"教学→反馈→迭代→再教学"的敏捷闭环</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-value fade-in stagger-3">
+            <h4>价值交付</h4>
+            <ul>
+                <li>教研效率大幅提升，课程设计可视化、结构标准化</li>
+                <li>凝结全体教师智慧，优质经验不再随人员流动而流失</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ==================== P08 · CLASSIN LMS ==================== -->
+    <section class="section" id="lms">
+        <div class="section-header">
+            <h2 class="section-title">ClassIn LMS：教学服务的全程可视化与闭环</h2>
+        </div>
+
+        <div class="lms-layout">
+            <div class="lms-screenshot fade-in">
+                <div class="lms-gallery">
+                    <img src="./classin界面.png" alt="ClassIn LMS界面1">
+                    <img src="./classin教学活动.png" alt="ClassIn LMS界面2">
+                </div>
+            </div>
+            <div class="lms-content fade-in stagger-1">
+                <h4>0摩擦衔接TeacherIn</h4>
+                <ul>
+                    <li>老师在TeacherIn中引用标准化文档后，直接在ClassIn中发布各种教学活动</li>
+                    <li>不再是"课堂用一个软件、作业用一个软件"，所有教学行为都在一个生态内完成</li>
+                </ul>
+
+                <h4>机构视角的教学管控</h4>
+                <ul>
+                    <li><strong style="color:var(--text-primary)">行为监控</strong>：机构可以清晰看到老师是否真的落实了教学服务——有没有发作业、有没有及时批改、有没有课堂互动</li>
+                    <li><strong style="color:var(--text-primary)">数据汇总</strong>：过程性数据和终结性数据自动汇总，课程参与度、学生能力模型一目了然</li>
+                    <li>从"靠教师自觉"升级为"靠系统留痕"，管理者拥有"上帝视角"</li>
+                </ul>
+
+                <h4>丰富教学活动，提升续班率</h4>
+                <ul>
+                    <li>支持直播课、录播课、作业、测验、讨论、文件资料等多种活动任意组合</li>
+                    <li>课前（视频精讲/盲点测验）+ 课中（互动课堂）+ 课后（分层作业/多形式批阅）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="lms-compare fade-in stagger-2">
+            <span class="old">过去：教学质量依赖名师个人发挥</span>
+            <span style="margin:0 12px;color:var(--accent);">→</span>
+            <span class="new">现在：标准化流程落地，让好教学可复制</span>
+        </div>
+    </section>
+
+    <!-- ==================== P09 · AI QUALITY ==================== -->
+    <section class="section" id="ai-quality">
+        <div class="section-header">
+            <h2 class="section-title">AI教学质量管控：让每节课都自动复盘</h2>
+            <p class="section-subtitle" style="font-style:italic;">上一堂的复盘，就是下一堂的备课。减少监课成本，有效提升教师教学质量。</p>
+        </div>
+
+        <div class="ai-layout">
+            <div class="ai-panel fade-in">
+                <div class="ai-panel-title">AI录课总结</div>
+                <ul>
+                    <li><strong style="color:var(--text-primary)">自动生成课堂总结</strong>：课后自动生成课堂总结，提取核心知识点与教学脉络，形成结构化的课堂记录</li>
+                    <li><strong style="color:var(--text-primary)">帮助缺课学生快速回顾</strong>：帮助教师快速梳理课堂交付情况，也为管理者提供快速了解课堂内容的入口</li>
+                    <li><strong style="color:var(--text-primary)">管理者可监控</strong>：教学主管无需回看完整录像，通过摘要即可了解课堂概况</li>
+                </ul>
+            </div>
+            <div class="ai-panel fade-in stagger-1">
+                <div class="ai-panel-title">AI授课分析</div>
+                <ul>
+                    <li><strong style="color:var(--text-primary)">一键开启</strong>：新建课堂时勾选后，课后自动生成分析报告</li>
+                    <li><strong style="color:var(--text-primary)">专属智能体</strong>：按学科匹配分析智能体，支持机构自定义模型</li>
+                    <li><strong style="color:var(--text-primary)">多维度评估</strong>：目标达成、互动质量、节奏与表达等维度综合评分</li>
+                </ul>
+            </div>
+            <div class="ai-panel fade-in stagger-1">
+                <div class="ai-panel-title">AI教学风险监控系统</div>
+                <ul>
+                    <li><strong style="color:var(--text-primary)">守住课堂底线</strong>：让每节课的言论都在管控范围内</li>
+                    <li><strong style="color:var(--text-primary)">防范利益损失</strong>：防范教师引流、泄密、负面言论等利益损失行为</li>
+                    <li><strong style="color:var(--text-primary)">降低经营风险</strong>：降低因教师不当言论引发的退费、纠纷、品牌受损风险</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="ai-footer fade-in stagger-2">
+            课后自动触发，无需人工干预，每堂课都有AI督导
+        </div>
+    </section>
+
+    <!-- ==================== P10 · TEMPLATE ==================== -->
+    <section class="section" id="ai-template">
+        <div class="section-header">
+            <h2 class="section-title">模板解读：把模糊评价变成精准的数据管理</h2>
+            <p class="section-subtitle">深度解析预置授课分析Agent</p>
+        </div>
+
+        <div class="template-layout">
+            <div class="template-left fade-in">
+                <div class="template-report-crop">
+                    <img src="./AI授课分析报告.png" alt="AI授课分析报告截图">
+                </div>
+                <div class="template-agent-shot">
+                    <div class="template-agent-demo" aria-label="AI授课分析智能体动效演示">
+                        <div class="template-agent-preview-strip"></div>
+                        <div class="template-ai-analysis">
+                            <div class="template-ai-analysis-hd">
+                                <div class="template-ai-analysis-title">AI 授课分析</div>
+                                <div class="template-ai-toggle" id="template-ai-toggle"></div>
+                            </div>
+                            <div class="template-ai-desc" id="template-ai-desc">由 ClassIn AI 教研院提供，通过课堂录像分析老师授课情况，课后可在课堂回放模块查看。</div>
+                            <div class="template-ai-select-row" id="template-ai-select">
+                                <div class="template-ai-select-label">选择智能体</div>
+                                <div class="template-ai-chip"><span class="template-ai-avatar"></span>AI帮我评 <span>⌄</span></div>
+                            </div>
+                            <div class="template-ai-dropdown" id="template-ai-dropdown">
+                                <div class="template-ai-option" data-template-ai-option>
+                                    <div class="template-ai-option-main"><span class="template-ai-avatar"></span><span class="template-ai-option-name">AI帮我评</span></div>
+                                </div>
+                                <div class="template-ai-option" data-template-ai-option data-template-ai-key="humanities">
+                                    <div class="template-ai-option-main"><span class="template-ai-avatar" style="background:conic-gradient(from 90deg,#d35d3a,#e89a55,#f1c98a,#d35d3a);"></span><span class="template-ai-option-name">课堂研析（公立校人文课）</span></div>
+                                </div>
+                                <div class="template-ai-option" data-template-ai-option data-template-ai-key="math">
+                                    <div class="template-ai-option-main"><span class="template-ai-avatar" style="background:conic-gradient(from 90deg,#3754d6,#5aa3ff,#8be3ff,#3754d6);"></span><span class="template-ai-option-name">课堂研析（公立校数理课）</span></div>
+                                </div>
+                                <div class="template-ai-option plus">
+                                    <div class="template-ai-option-main"><span class="template-ai-option-name">＋ AgentIn 智能体</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="template-right">
+                <div class="template-card fade-in stagger-1">
+                    <h4>综合评分与雷达图</h4>
+                    <p>直观展示AI综合评分（如97.1分），以及知识准确性、教学方法、课堂氛围、目标达成、参与质量、语言感染等维度的能力雷达图，一眼看出教师的优势与短板。</p>
+                </div>
+                <div class="template-card fade-in stagger-2">
+                    <h4>教学时间分配</h4>
+                    <p>精准统计"教师讲授"、"师生互动"、"学生自主"的时间占比，告别"满堂灌"，量化课堂结构是否合理。</p>
+                </div>
+                <div class="template-card fade-in stagger-3">
+                    <h4>课堂数据详情</h4>
+                    <p>记录师生说话时长比例、关键词云验证教学目标是否真正落地，记录教师平均语速、口癖、卡顿情况，精准还原课堂表达。</p>
+                </div>
+                <div class="template-card fade-in stagger-4">
+                    <h4>课堂互动分析</h4>
+                    <p>详细记录1对1互动、多人互动、自问自答等互动情况，总结老师提问类型和数量，评估互动有效性，识别"假互动"。</p>
+                </div>
+                <div class="template-card fade-in stagger-5">
+                    <h4>优化建议</h4>
+                    <p>根据各维度分析结果，对教师提出针对性改进建议，如时间分配、减少口头禅、提问策略优化、多媒体应用等。</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align:center;margin-top:24px;color:var(--text-secondary);font-size:0.9rem;">从"凭感觉评课"升级为"基于数据的精准督导"，确保教学底线，为师训提供精准方向</p>
+    </section>
+
+    <!-- ==================== P11 · AI RISK MONITOR ==================== -->
+    <section class="section" id="risk-monitor">
+        <div class="section-header">
+            <h2 class="section-title">AI教学风险监测系统：量化教师课堂规范程度，辅助教学管理</h2>
+            <p class="section-subtitle">课后自动识别风险点位，帮助机构快速定位、分级处理、持续追踪</p>
+        </div>
+
+        <div class="risk-layout">
+            <div>
+                <div class="risk-cards">
+                    <div class="risk-card fade-in">
+                        <h4>合规风险</h4>
+                        <p>识别涉及时政、历史、宗教的不当评论或解读，极端仇恨、反动或歧视性言论，以及对课程内容或服务的虚假宣传、过度承诺。</p>
+                    </div>
+                    <div class="risk-card fade-in stagger-1">
+                        <h4>利益损失风险</h4>
+                        <p>识别教师索要私人联系方式、引导学生去个人工作室或第三方平台消费、损害机构声誉、暗示退费、泄露机构内部信息等行为。</p>
+                    </div>
+                    <div class="risk-card fade-in stagger-2">
+                        <h4>服务质量风险</h4>
+                        <p>识别人身攻击、辱骂讽刺、不雅词汇、长时间闲聊、偏离课堂主题、讲课时长占比过低、迟到旷课、画面合规和隐私泄露等问题。</p>
+                    </div>
+                </div>
+
+                <div class="risk-score fade-in stagger-3">
+                    <div class="risk-score-title">风险评分等级</div>
+                    <div class="risk-score-bar"></div>
+                    <div class="risk-score-labels">
+                        <span>0-3 低风险</span>
+                        <span>4-6 中风险</span>
+                        <span>7-10 高风险</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="risk-screens fade-in stagger-1">
+                <img src="./风险监控01.png" alt="AI教学风险监测系统看板">
+                <img src="./风险监控02.png" alt="AI教学风险明细">
+            </div>
+        </div>
+
+        <div class="risk-feature-grid fade-in stagger-4">
+            <div class="risk-feature"><strong>1小时内生成</strong>课程结束后自动启动，生成风险点位汇总和等级评分。</div>
+            <div class="risk-feature"><strong>阈值通知</strong>支持自定义风险评分阈值，达到指定评分后自动通知负责人。</div>
+            <div class="risk-feature"><strong>一键定位</strong>后台展示风险明细，可跳转到风险言论出现的视频位置。</div>
+        </div>
+    </section>
+
+    <!-- ==================== P12 · FLYWHEEL ==================== -->
+    <section class="section" id="flywheel">
+        <div class="section-header">
+            <h2 class="section-title">质量驱动增长：三环闭合如何转化为业务飞轮</h2>
+        </div>
+
+        <div class="flywheel-container">
+            <div class="flywheel fade-in stagger-1">
+                <div class="flywheel-ring outer"></div>
+                <div class="flywheel-ring inner"></div>
+                <div class="flywheel-center">
+                    <div class="flywheel-center-text">教学质量飞轮</div>
+                    <div class="flywheel-center-sub">标准化执行 · 数据化优化</div>
+                </div>
+                <div class="flywheel-node inner-node n1">
+                    <div class="flywheel-node-title">① 标准课程供给</div>
+                    <div class="flywheel-node-product">TeacherIn</div>
+                    <div class="flywheel-node-desc">教研资产可复用</div>
+                </div>
+                <div class="flywheel-node inner-node n2">
+                    <div class="flywheel-node-title">② 过程执行可视</div>
+                    <div class="flywheel-node-product">ClassIn LMS</div>
+                    <div class="flywheel-node-desc">教学行为全程留痕</div>
+                </div>
+                <div class="flywheel-node inner-node n3">
+                    <div class="flywheel-node-title">③ 全量质检复盘</div>
+                    <div class="flywheel-node-product">AI授课分析</div>
+                    <div class="flywheel-node-desc">客观诊断可落地</div>
+                </div>
+                <div class="flywheel-node inner-node n4">
+                    <div class="flywheel-node-title">④ 迭代反哺教研</div>
+                    <div class="flywheel-node-product">管理决策</div>
+                    <div class="flywheel-node-desc">快速更新课程与师训</div>
+                </div>
+                <div class="flywheel-step s1">质量稳定</div>
+                <div class="flywheel-step s2">学习效果可见</div>
+                <div class="flywheel-step s3">家长满意提升</div>
+                <div class="flywheel-step s4">续班与转介绍增长</div>
+                <div class="flywheel-step s5">生源自循环</div>
+                <div class="flywheel-step s6">更多成本投入教研</div>
+                <div class="flywheel-step s7">闭环加速</div>
+            </div>
+
+            <div class="flywheel-bottom fade-in stagger-2">
+                <div class="flywheel-bottom-text">质量是最好的增长策略</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== P13 · HARDWARE ==================== -->
+    <section class="section" id="hardware">
+        <div class="section-header">
+            <h2 class="section-title">数字化基础设施：赋空间以智能与温度</h2>
+            <p class="section-subtitle">专为教学场景设计的高规格硬件，让AI"看得清、听得准、分析得透"</p>
+        </div>
+
+        <div class="hw-layout">
+            <div class="hw-note fade-in">
+                <h4>教学一体机</h4>
+                <ul>
+                    <li>4K显示与多尺寸规格，适配不同教室空间</li>
+                    <li>课堂互动、课件展示、作业讲评集中承载</li>
+                    <li>是ClassIn LMS教学执行的核心终端</li>
+                </ul>
+            </div>
+            <div class="hw-scene fade-in stagger-1">
+                <img src="./教室02.png" alt="教室场景">
+            </div>
+            <div class="hw-note fade-in stagger-2">
+                <h4>全向吸顶麦克风</h4>
+                <ul>
+                    <li>32阵列麦克风，支持降噪与回声消除</li>
+                    <li>80平米覆盖，发言人方向动态聚焦</li>
+                    <li>为AI授课分析提供高质量语音输入</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="hw-footer fade-in stagger-3">
+            硬件 + 软件 + AI 的完整解决方案
+        </div>
+    </section>
+
+    <!-- ==================== P14 · CASE STUDY 1 ==================== -->
+    <section class="section" id="case1">
+        <div class="section-header">
+            <h2 class="section-title">标杆案例：华南某头部教培机构</h2>
+            <p class="section-subtitle">AI驱动的“备-教-评”全流程标准化升级</p>
+        </div>
+
+        <div class="case-bg fade-in">
+            华南地区某头部教培机构，在校学生超过20,000人，教师团队规模超过300人，多校区运营。<br>
+            机构秉持"一切以业务增长为导向，倒逼流程改革"的管理理念，深信规模化管理的核心在于建立可替代机制，而非依赖个人能力。
+        </div>
+
+        <div class="case-quote fade-in" style="margin-bottom:18px;">
+            坚持人才属于公司，不属于个人。把团队做大、建立可替代机制，管理才能真正落地。
+        </div>
+
+        <div class="case-layout">
+            <div class="case-left-column">
+                <div class="case-column case-content-panel fade-in stagger-1">
+                    <div class="case-column-title">解决方案落地</div>
+                    <ul class="case-list">
+                        <li>TeacherIn标准化备课：基于统一教案模板与资源库，教师可快速完成标准化备课，确保不同校区、不同教师的教学内容与质量保持一致</li>
+                        <li>全量课程自动录播：每堂课自动生成高清录播与AI课堂摘要，支持知识点索引与关键节点回放，帮助教师复盘教学细节，沉淀优质课例</li>
+                        <li>常态化AI授课分析：系统自动分析课堂互动数据、学生参与度与教学目标达成率，生成可视化报告，为教师提供个性化教学改进建议</li>
+                    </ul>
+                </div>
+                <div class="case-metrics-row fade-in stagger-3">
+                    <div class="case-metric">
+                        <div class="case-metric-num" data-target="3" data-suffix="个月">3个月</div>
+                        <div class="case-metric-label">新教师培养周期</div>
+                        <div class="case-metric-note">原1年缩短至3个月</div>
+                    </div>
+                    <div class="case-metric">
+                        <div class="case-metric-num" data-target="40" data-suffix="%↓">40%↓</div>
+                        <div class="case-metric-label">新教师磨课次数</div>
+                        <div class="case-metric-note">显著减少</div>
+                    </div>
+                    <div class="case-metric">
+                        <div class="case-metric-num" data-target="60" data-suffix="%↓">60%↓</div>
+                        <div class="case-metric-label">家长专业度投诉率</div>
+                        <div class="case-metric-note">明显降低</div>
+                    </div>
+                </div>
+            </div>
+            <div class="case-column case-image-panel fade-in stagger-2">
+                <img src="./AI录课总结最新版.png" alt="授课分析01截图">
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== P15 · CASE STUDY 2 ==================== -->
+    <section class="section" id="case2">
+        <div class="section-header">
+            <h2 class="section-title">标杆案例：韩国某老牌教培机构</h2>
+            <p class="section-subtitle">TeacherIn+LMS 驱动教学标准化与逆势增长</p>
+        </div>
+
+        <div class="case-bg fade-in">
+            韩国京畿道某老牌教培机构，深耕本地市场近20年，主攻中下游学生群体。<br>
+            面临与中国高度相似的存量竞争压力：首尔教培机构数量超过2.4万所，是便利店数量的3倍。机构创始人深信：要在竞争中胜出，唯有真正提升中下游学生的成绩。
+        </div>
+
+        <div class="case-layout">
+            <div class="case-quotes fade-in stagger-1">
+                <div class="case-quote">
+                    自从同时使用ClassIn和TeacherIn之后，新老师从刚入职到投入教学只需要两个月的时间。令人震惊的是，仅有两个月经验的新教师获得的教师评分比没有使用ClassIn的15年经验教师还要高。
+                </div>
+                <div class="case-quote">
+                    监课功能在普及后的仅仅三周内，所有教师的授课水平都有明显提高，开始趋于标准化，学生的课堂满意度也自然提高。
+                </div>
+                <h4>解决方案落地</h4>
+                <ul>
+                    <li>TeacherIn教学手册沉淀：优秀教师将课程结构系统化整理，新教师可直接调用</li>
+                    <li>ClassIn LMS互动课堂：教师通过电子白板开展互动教学，学生使用平板实时参与</li>
+                    <li>全员监课+教师互评：管理层将监课权限开放给全体教师，形成自发标准化压力</li>
+                </ul>
+            </div>
+            <div class="case-metrics fade-in stagger-2">
+                <div class="metric-card">
+                    <div class="metric-num" data-target="2" data-suffix="个月">2个月</div>
+                    <div class="metric-label">新教师培养周期<br>（原6-12个月）</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-num" data-target="3" data-suffix="倍">3倍</div>
+                    <div class="metric-label">退课学生重新报名<br>人数同比增长</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-num" data-target="3" data-suffix="周">3周</div>
+                    <div class="metric-label">全员监课后<br>授课水平明显提升</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-num" data-target="0" data-suffix="评分超越" data-special="true">✓</div>
+                    <div class="metric-label">2个月新教师评分<br>高于15年经验教师</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="case-gallery fade-in stagger-3">
+            <img src="./政律史官监课.png" alt="韩国案例配图1">
+            <img src="./政律史官大屏.png" alt="韩国案例配图2">
+            <img src="./政律史官教师评价.png" alt="韩国案例配图3">
+        </div>
+    </section>
+
+    <!-- ==================== P16 · VALUE ==================== -->
+    <section class="section" id="value">
+        <div class="section-header">
+            <h2 class="section-title">管内容、管过程、管结果、管未来</h2>
+            <p class="section-subtitle" style="font-style:italic;">一套系统，帮您管住教学质量的每一个环节</p>
+        </div>
+
+        <div class="value-stair-wrap">
+            <div class="value-step fade-in-left">
+                <div class="value-step-label">
+                    <div class="value-step-icon">📖</div>
+                    <div class="value-step-tag">管内容</div>
+                </div>
+                <div class="value-step-content">
+                    <ul>
+                        <li>教研成果从"存在名师脑子里"变为机构永久拥有的数字资产</li>
+                        <li>跨校区、跨层级教师共享同一套高标准内容，质量从源头对齐</li>
+                        <li>新教师入职即站在团队集体智慧的肩膀上，而非从零摸索</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="value-step fade-in-left stagger-1">
+                <div class="value-step-label">
+                    <div class="value-step-icon">👁️</div>
+                    <div class="value-step-tag">管过程</div>
+                </div>
+                <div class="value-step-content">
+                    <ul>
+                        <li>每一次作业布置、批改、课堂互动，全程留痕、有据可查</li>
+                        <li>管理者首次拥有"上帝视角"——不是靠抽查，而是靠系统</li>
+                        <li>教学服务是否真实发生，不再依赖教师自觉，而是由数据说话</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="value-step fade-in-left stagger-2">
+                <div class="value-step-label">
+                    <div class="value-step-icon">📊</div>
+                    <div class="value-step-tag">管结果</div>
+                </div>
+                <div class="value-step-content">
+                    <ul>
+                        <li>从5%抽查的管理盲区，到100%课堂AI全量覆盖</li>
+                        <li>客观数据代替主观感受，整改有据可依，师训方向精准</li>
+                        <li>评课从主观印象升级为数据证据，改进方向更清晰、执行更稳定</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="value-step fade-in-left stagger-3">
+                <div class="value-step-label">
+                    <div class="value-step-icon">🚀</div>
+                    <div class="value-step-tag">管未来</div>
+                </div>
+                <div class="value-step-content">
+                    <ul>
+                        <li>标准化师训与课程体系，让每一个新校区都能快速复制高质量教学</li>
+                        <li>质量稳定驱动口碑与续班，生源自我造血，机构摆脱对广告投放的依赖</li>
+                        <li>教学质量成为机构最深的护城河，竞争壁垒随规模增长而持续加深</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="value-footer fade-in stagger-4">
+            教学质量管理，是机构规模化增长的唯一可持续路径。
+        </div>
+    </section>
+
+    <!-- ==================== P17 · DIFFERENTIATION ==================== -->
+    <section class="section" id="differentiation">
+        <div class="section-header">
+            <h2 class="section-title">翼鸥全链路生态：与工具拼凑方案的关键差异</h2>
+        </div>
+
+        <div class="diff-quote fade-in">
+            全链路能力服务于教学质量管理与持续增长目标
+        </div>
+
+        <div class="diff-grid">
+            <div class="diff-card fade-in stagger-1">
+                <div class="diff-card-inner">
+                    <div class="diff-card-face diff-card-front">
+                        <div class="diff-card-title">数据生态，而非数据孤岛</div>
+                    </div>
+                    <div class="diff-card-face diff-card-back">
+                        <ul>
+                            <li>自行拼凑工具：录播数据在A平台、作业数据在B平台、评课数据在C平台，无法互通</li>
+                            <li>翼鸥方案：课程数据 ↔ 学习行为数据 ↔ AI质检数据三者同一生态、互相印证</li>
+                            <li>管理者第一次拥有"全链路视角"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="diff-card fade-in stagger-2">
+                <div class="diff-card-inner">
+                    <div class="diff-card-face diff-card-front">
+                        <div class="diff-card-title">AI-Native，而非AI外挂</div>
+                    </div>
+                    <div class="diff-card-face diff-card-back">
+                        <ul>
+                            <li>自搭AI无法感知课堂上下文，分析结果缺乏教学专业性，维护成本高</li>
+                            <li>翼鸥的AI能力原生嵌入产品生态：课堂结束后自动触发，无缝嵌入回放流程</li>
+                            <li>是无感知的助手，是随时响应的督导</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="diff-card fade-in stagger-3">
+                <div class="diff-card-inner">
+                    <div class="diff-card-face diff-card-front">
+                        <div class="diff-card-title">以终为始，对业务结果负责</div>
+                    </div>
+                    <div class="diff-card-face diff-card-back">
+                        <ul>
+                            <li>拼凑工具解决的是"有没有"的问题，没有人对"教学质量有没有真正提升"负责</li>
+                            <li>翼鸥从机构增长目标出发，反向推导需要什么样的质量管控能力</li>
+                            <li>续班率、新教师培养周期、多校区扩张能力，每一项都有对应落地路径</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="diff-card fade-in stagger-4">
+                <div class="diff-card-inner">
+                    <div class="diff-card-face diff-card-front">
+                        <div class="diff-card-title">行业最佳实践的沉淀与快速复用</div>
+                    </div>
+                    <div class="diff-card-face diff-card-back">
+                        <ul>
+                            <li>翼鸥已深度服务全球60,000+教育机构、覆盖150+国家</li>
+                            <li>机构可直接复用数万家教育机构验证过的落地路径与方法论</li>
+                            <li>从方案设计到师训模板，均有经过验证的最佳实践</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="diff-table fade-in stagger-5">
+            <thead>
+                <tr>
+                    <th>评估维度</th>
+                    <th>自行拼凑工具</th>
+                    <th>翼鸥全链路方案</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>数据是否贯通</td>
+                    <td class="cross">✗ 数据孤岛，无法互通</td>
+                    <td class="check">✓ 同一生态，全链路贯通</td>
+                </tr>
+                <tr>
+                    <td>AI是否原生嵌入</td>
+                    <td class="cross">✗ 外挂工具，手动触发</td>
+                    <td class="check">✓ AI-Native，自动运行</td>
+                </tr>
+                <tr>
+                    <td>是否对业务结果负责</td>
+                    <td class="cross">✗ 工具各自为战</td>
+                    <td class="check">✓ 以终为始，对增长目标负责</td>
+                </tr>
+                <tr>
+                    <td>行业经验积累</td>
+                    <td class="cross">✗ 通用工具，无教育场景沉淀</td>
+                    <td class="check">✓ 60,000+机构实践验证</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ==================== P18 · BACK COVER ==================== -->
+    <section class="section" id="backcover">
+        <canvas id="particleCanvas2"></canvas>
+        <div class="backcover-content">
+            <div class="backcover-logo"><img src="./新logo.png" alt="ClassIn" style="width:220px;height:auto;"></div>
+            <div class="backcover-slogan">因理念超越过去 · 因科技重塑未来</div>
+            <div class="backcover-products">TeacherIn · ClassIn LMS · AI教学质量管控</div>
+            <div class="backcover-stats">
+                <div class="backcover-stat">
+                    <div class="backcover-stat-num">150+</div>
+                    <div class="backcover-stat-label">国家</div>
+                </div>
+                <div class="backcover-stat">
+                    <div class="backcover-stat-num">60000+</div>
+                    <div class="backcover-stat-label">机构</div>
+                </div>
+                <div class="backcover-stat">
+                    <div class="backcover-stat-num">2000万</div>
+                    <div class="backcover-stat-label">用户</div>
+                </div>
+            </div>
+            <div class="backcover-contact">
+                www.eeo.cn | 翼鸥教育科技
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+    // ===== PARTICLE SYSTEM =====
+    function initParticles(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const particleCount = 80;
+
+        function resize() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = -(Math.random() * 0.5 + 0.2);
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.6 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < -10) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(170, 255, 0, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            const p = new Particle();
+            p.y = Math.random() * canvas.height;
+            particles.push(p);
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(170, 255, 0, ${0.1 * (1 - dist / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawConnections();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    initParticles('particleCanvas1');
+    initParticles('particleCanvas2');
+
+    // ===== TYPEWRITER EFFECT (COVER) =====
+    function typewriterCover() {
+        const title = document.getElementById('coverTitle');
+        const text = title.textContent;
+        title.innerHTML = '';
+        let i = 0;
+        function typeChar() {
+            if (i < text.length) {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = text[i];
+                span.style.animation = `fadeInChar 0.1s ${i * 0.08}s forwards`;
+                title.appendChild(span);
+                i++;
+                setTimeout(typeChar, 80);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('coverSubtitle').classList.add('visible');
+                    document.getElementById('coverProduct').classList.add('visible');
+                }, 500);
+            }
+        }
+        typeChar();
+    }
+
+    // ===== SCROLL ANIMATIONS (Intersection Observer) =====
+    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Trigger counter animations
+                if (entry.target.querySelectorAll('.metric-num, .ai-score-num').length > 0) {
+                    entry.target.querySelectorAll('.metric-num, .ai-score-num').forEach(el => {
+                        animateCounter(el);
+                    });
+                }
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in, .fade-in-left').forEach(el => observer.observe(el));
+
+    // ===== COUNTER ANIMATION =====
+    function animateCounter(el) {
+        if (el.dataset.animated) return;
+        el.dataset.animated = 'true';
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        if (el.dataset.special === 'true') {
+            el.textContent = '✓';
+            return;
+        }
+        if (isNaN(target)) return;
+        const duration = 2000;
+        const startTime = performance.now();
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = target * eased;
+            if (target % 1 !== 0) {
+                el.textContent = current.toFixed(1) + suffix;
+            } else {
+                el.textContent = Math.floor(current).toLocaleString() + suffix;
+            }
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    // ===== RADAR CHART =====
+    function drawRadar() {
+        const svg = document.getElementById('radarChart');
+        if (!svg) return;
+        svg.innerHTML = '';
+        const cx = 130, cy = 130, r = 86;
+        const dimensions = ['目标达成', '互动质量', '教学设计', '语言表达', '课堂氛围', '知识准确'];
+        const scores = [0.95, 0.88, 0.92, 0.90, 0.96, 0.98];
+        const n = dimensions.length;
+
+        // Draw grid
+        for (let level = 1; level <= 4; level++) {
+            let points = [];
+            for (let i = 0; i < n; i++) {
+                const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+                const lr = r * level / 4;
+                points.push(`${cx + lr * Math.cos(angle)},${cy + lr * Math.sin(angle)}`);
+            }
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', points.join(' '));
+            polygon.setAttribute('fill', 'none');
+            polygon.setAttribute('stroke', 'rgba(170,255,0,0.15)');
+            polygon.setAttribute('stroke-width', '0.5');
+            svg.appendChild(polygon);
+        }
+
+        // Draw data
+        let dataPoints = [];
+        for (let i = 0; i < n; i++) {
+            const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+            const dr = r * scores[i];
+            dataPoints.push(`${cx + dr * Math.cos(angle)},${cy + dr * Math.sin(angle)}`);
+        }
+        const dataPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        dataPolygon.setAttribute('points', dataPoints.join(' '));
+        dataPolygon.setAttribute('fill', 'rgba(170,255,0,0.15)');
+        dataPolygon.setAttribute('stroke', '#AAFF00');
+        dataPolygon.setAttribute('stroke-width', '2');
+        svg.appendChild(dataPolygon);
+
+        // Draw labels
+        for (let i = 0; i < n; i++) {
+            const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+            const lx = cx + (r + 18) * Math.cos(angle);
+            const ly = cy + (r + 18) * Math.sin(angle);
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', lx);
+            text.setAttribute('y', ly);
+            if (Math.cos(angle) > 0.35) {
+                text.setAttribute('text-anchor', 'start');
+            } else if (Math.cos(angle) < -0.35) {
+                text.setAttribute('text-anchor', 'end');
+            } else {
+                text.setAttribute('text-anchor', 'middle');
+            }
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('fill', '#cccccc');
+            text.setAttribute('font-size', '11');
+            text.textContent = dimensions[i];
+            svg.appendChild(text);
+        }
+    }
+
+    // ===== BIRTH CHART =====
+    function drawBirthChart() {
+        const svg = document.getElementById('birthChart');
+        if (!svg) return;
+        svg.innerHTML = '';
+        const data = [
+            {year: 2016, value: 1883},
+            {year: 2018, value: 1523},
+            {year: 2020, value: 1200},
+            {year: 2022, value: 956},
+            {year: 2024, value: 850},
+            {year: 2025, value: 792}
+        ];
+        const w = 760, h = 220;
+        const padL = 62, padR = 24, padT = 26, padB = 44;
+        const maxVal = 2000, minVal = 700;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const xScale = (i) => padL + (i / (data.length - 1)) * plotW;
+        const yScale = (v) => padT + ((maxVal - v) / (maxVal - minVal)) * plotH;
+
+        // grid lines
+        [800, 1200, 1600, 2000].forEach((v) => {
+            const gy = yScale(v);
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', padL);
+            line.setAttribute('y1', gy);
+            line.setAttribute('x2', w - padR);
+            line.setAttribute('y2', gy);
+            line.setAttribute('stroke', 'rgba(170,255,0,0.12)');
+            line.setAttribute('stroke-width', '1');
+            svg.appendChild(line);
+
+            const gl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            gl.setAttribute('x', padL - 10);
+            gl.setAttribute('y', gy + 4);
+            gl.setAttribute('text-anchor', 'end');
+            gl.setAttribute('fill', '#6f6f6f');
+            gl.setAttribute('font-size', '10');
+            gl.textContent = `${v}万`;
+            svg.appendChild(gl);
+        });
+
+        // Line
+        let pathD = '';
+        data.forEach((d, i) => {
+            const x = xScale(i);
+            const y = yScale(d.value);
+            pathD += (i === 0 ? 'M' : 'L') + `${x},${y}`;
+        });
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathD);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#FF4444');
+        path.setAttribute('stroke-width', '3');
+        path.setAttribute('stroke-dasharray', path.getTotalLength ? path.getTotalLength() : '800');
+        path.setAttribute('stroke-dashoffset', path.getTotalLength ? path.getTotalLength() : '800');
+        path.style.animation = 'drawLine 2s ease forwards';
+        svg.appendChild(path);
+
+        // Points & labels
+        data.forEach((d, i) => {
+            const x = xScale(i);
+            const y = yScale(d.value);
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', '3');
+            circle.setAttribute('fill', '#FF4444');
+            svg.appendChild(circle);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', y - (i % 2 === 0 ? 12 : 18));
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('fill', i === 0 ? '#AAFF00' : (i === data.length - 1 ? '#FF4444' : '#888'));
+            text.setAttribute('font-size', i === 0 || i === data.length - 1 ? '13' : '10');
+            text.setAttribute('font-weight', i === 0 || i === data.length - 1 ? 'bold' : 'normal');
+            text.textContent = d.value + '万';
+            svg.appendChild(text);
+
+            const yearText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yearText.setAttribute('x', x);
+            yearText.setAttribute('y', h - 14);
+            yearText.setAttribute('text-anchor', 'middle');
+            yearText.setAttribute('fill', '#666');
+            yearText.setAttribute('font-size', '11');
+            yearText.textContent = d.year;
+            svg.appendChild(yearText);
+        });
+
+        // Arrow
+        const dropRate = Math.round(((data[0].value - data[data.length - 1].value) / data[0].value) * 100);
+        const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        arrow.setAttribute('x', w - 168);
+        arrow.setAttribute('y', padT + 20);
+        arrow.setAttribute('text-anchor', 'middle');
+        arrow.setAttribute('fill', '#FF4444');
+        arrow.setAttribute('font-size', '15');
+        arrow.setAttribute('font-weight', '700');
+        arrow.textContent = `↓ 较2016年下降${dropRate}%`;
+        svg.appendChild(arrow);
+    }
+
+    // ===== NAVIGATION DOTS =====
+    function initNavDots() {
+        const sections = document.querySelectorAll('.section');
+        const nav = document.getElementById('navDots');
+        sections.forEach((section, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot';
+            dot.addEventListener('click', () => {
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
+            nav.appendChild(dot);
+        });
+
+        // Update active dot on scroll
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const index = Array.from(sections).indexOf(entry.target);
+                    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+                        d.classList.toggle('active', i === index);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+        sections.forEach(s => sectionObserver.observe(s));
+    }
+
+    function initFlipCards() {
+        document.querySelectorAll('#differentiation .diff-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('is-flipped');
+            });
+        });
+    }
+
+    function initLayeredGalleries() {
+        document.querySelectorAll('#teacherin .module-gallery, #lms .lms-gallery, #risk-monitor .risk-screens').forEach(gallery => {
+            const galleryImages = gallery.querySelectorAll('img');
+            galleryImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    galleryImages.forEach(item => item.classList.remove('is-active'));
+                    img.classList.add('is-active');
+                });
+            });
+        });
+    }
+
+    function initTemplateAgentDemo() {
+        const toggle = document.getElementById('template-ai-toggle');
+        const desc = document.getElementById('template-ai-desc');
+        const select = document.getElementById('template-ai-select');
+        const dropdown = document.getElementById('template-ai-dropdown');
+        const options = Array.from(document.querySelectorAll('[data-template-ai-option]'));
+        if (!toggle || !desc || !select || !dropdown || !options.length) return;
+
+        let timers = [];
+        const clearTimers = () => {
+            timers.forEach(timer => clearTimeout(timer));
+            timers = [];
+        };
+        const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+        const activateOption = key => {
+            options.forEach(option => option.classList.toggle('active', option.dataset.templateAiKey === key));
+        };
+        const play = () => {
+            clearTimers();
+            toggle.classList.remove('on');
+            desc.classList.remove('show');
+            select.classList.remove('show');
+            dropdown.classList.remove('open');
+            options.forEach(option => option.classList.remove('active'));
+
+            at(500, () => toggle.classList.add('on'));
+            at(900, () => desc.classList.add('show'));
+            at(1300, () => select.classList.add('show'));
+            at(1700, () => dropdown.classList.add('open'));
+            at(2200, () => activateOption('humanities'));
+            at(3100, () => activateOption('math'));
+            at(5200, () => dropdown.classList.remove('open'));
+            at(6500, play);
+        };
+
+        play();
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+        typewriterCover();
+        drawRadar();
+        drawBirthChart();
+        initNavDots();
+        initFlipCards();
+        initLayeredGalleries();
+        initTemplateAgentDemo();
+    });
+
+    // Add CSS animation for chart line drawing
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInChar {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    </script>
+</body>
+</html>
