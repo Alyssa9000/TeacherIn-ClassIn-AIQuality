@@ -1393,7 +1393,16 @@
         .sf-text-card h4 {
             color: var(--accent);
             font-size: 1.08rem;
-            margin-bottom: 14px;
+            margin-bottom: 10px;
+        }
+        .sf-text-card h4 + p + h4 {
+            margin-top: 18px;
+        }
+        .sf-text-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.65;
+            margin: 0;
         }
         .sf-text-card li {
             list-style: none;
@@ -1413,6 +1422,38 @@
             border-radius: 50%;
             background: var(--accent);
             box-shadow: 0 0 10px rgba(170,255,0,0.45);
+        }
+        .sf-cta {
+            text-align: center;
+            margin-top: 36px;
+        }
+        .sf-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, rgba(170,255,0,0.14), rgba(170,255,0,0.04));
+            border: 1px solid rgba(170,255,0,0.45);
+            border-radius: 999px;
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            box-shadow: 0 10px 26px rgba(170,255,0,0.12);
+            transition: all 0.28s ease;
+        }
+        .sf-cta-btn:hover {
+            background: linear-gradient(135deg, rgba(170,255,0,0.25), rgba(170,255,0,0.08));
+            border-color: rgba(170,255,0,0.75);
+            box-shadow: 0 16px 34px rgba(170,255,0,0.22);
+            transform: translateY(-2px);
+        }
+        .sf-cta-arrow {
+            transition: transform 0.28s ease;
+        }
+        .sf-cta-btn:hover .sf-cta-arrow {
+            transform: translateX(4px);
         }
 
         /* ===== P15 CASE STUDY 1 ===== */
@@ -2960,48 +3001,30 @@
             <!-- 麦克风 + 扬声器 -->
             <div class="sf-mic-grid">
                 <div class="sf-img-card fade-in">
-                    <img loading="lazy" decoding="async" src="./声场-DL1麦克风.png" alt="DL1指向性麦克风阵列">
-                    <span class="sf-product-name">DL1 指向性麦克风阵列</span>
+                    <img loading="lazy" decoding="async" src="./声场-DT2PRO4.png" alt="DT2Pro4 指向性麦克风阵列">
+                    <span class="sf-product-name">ClassIn Mic DT2 RPO 阵列麦克风</span>
                 </div>
                 <div class="sf-img-card fade-in stagger-1">
-                    <img loading="lazy" decoding="async" src="./声场-SPL1扬声器.jpeg" alt="SPL1高保真扬声器">
-                    <span class="sf-product-name">SPL1 高保真扬声器</span>
+                    <img loading="lazy" decoding="async" src="./声场- SPX1扬声器.jpg" alt="ClassIn Speaker SPX1 吸顶教学音箱">
+                    <span class="sf-product-name">ClassIn Speaker SPX1 吸顶教学音箱</span>
                 </div>
                 <div class="sf-text-card fade-in stagger-2">
-                    <h4>拾音 &amp; 扩声系统</h4>
-                    <ul>
-                        <li>采用8支单指向高保真麦克风阵列</li>
-                        <li>内载AI声域隔离引擎功能</li>
-                        <li>可实现180°定向拾音与3米纵深拾音</li>
-                        <li>结合高信噪比与宽频响应</li>
-                        <li>确保语音采集、扩声清晰自然</li>
-                    </ul>
+                    <h4>扩音更响更远</h4>
+                    <p>通过算力升级和算法优化，实现扩声功率提升、覆盖范围拓展，保障教室每一处声音清晰洪亮、均匀无死角。</p>
+                    <h4>全域均衡扩音</h4>
+                    <p>通过波束成形技术精准定位发言人，逐级均衡拾音，实现发言人随心走动，前后排均可听到一致清晰的声音。</p>
                 </div>
             </div>
 
-            <!-- 音频处理器 -->
-            <div class="sf-proc-grid">
-                <div class="sf-text-card fade-in stagger-2">
-                    <h4>智能AI音频处理器</h4>
-                    <ul>
-                        <li>内置国产4核高性能核心处理芯片，支持"一键AI智能调音"</li>
-                        <li>自研AI回声消除算法（AI AEC）</li>
-                        <li>自动增益控制（AGC）</li>
-                        <li>AI数字反馈抑制技术（AI AFC）</li>
-                        <li>AI智能降噪（AI ANS）</li>
-                        <li>保障语音信号清澈响亮，无噪音、回声、啸叫等问题</li>
-                    </ul>
-                </div>
-                <div class="sf-img-card fade-in stagger-3">
-                    <img loading="lazy" decoding="async" src="./声场-音频处理器.jpeg" alt="智能AI音频处理器">
-                    <span class="sf-product-name">智能AI音频处理器</span>
-                </div>
-            </div>
         </div>
 
-        <div class="hw-footer fade-in stagger-4">
-            声场硬件 + AI音频算法 = 教室级清晰音效全程保障
+        <div class="sf-cta fade-in stagger-3">
+            <a class="sf-cta-btn" href="https://dt2-pro-solution-273244354052.us-west1.run.app/" target="_blank" rel="noopener noreferrer">
+                <span>查看声场完整解决方案</span>
+                <span class="sf-cta-arrow">→</span>
+            </a>
         </div>
+
     </section>
 
     <!-- ==================== P15 · CASE STUDY 1 ==================== -->
