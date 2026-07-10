@@ -761,6 +761,18 @@
             height: 260px;
             margin: 16px auto;
         }
+        .ai-panel-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .ai-panel-wrap .ai-panel {
+            flex: 1;
+        }
+        .ai-panel-cta {
+            text-align: center;
+            margin-top: 20px;
+        }
         .ai-footer {
             text-align: center;
             margin-top: 32px;
@@ -2746,13 +2758,21 @@
                     <li><strong style="color:var(--text-primary)">管理者可监控</strong>：教学主管无需回看完整录像，通过摘要即可了解课堂概况</li>
                 </ul>
             </div>
-            <div class="ai-panel fade-in stagger-1">
-                <div class="ai-panel-title">AI授课分析</div>
-                <ul>
-                    <li><strong style="color:var(--text-primary)">一键开启</strong>：新建课堂时勾选后，课后自动生成分析报告</li>
-                    <li><strong style="color:var(--text-primary)">专属智能体</strong>：按学科匹配分析智能体，支持机构自定义模型</li>
-                    <li><strong style="color:var(--text-primary)">多维度评估</strong>：目标达成、互动质量、节奏与表达等维度综合评分</li>
-                </ul>
+            <div class="ai-panel-wrap fade-in stagger-1">
+                <div class="ai-panel">
+                    <div class="ai-panel-title">AI授课分析</div>
+                    <ul>
+                        <li><strong style="color:var(--text-primary)">一键开启</strong>：新建课堂时勾选后，课后自动生成分析报告</li>
+                        <li><strong style="color:var(--text-primary)">专属智能体</strong>：按学科匹配分析智能体，支持机构自定义模型</li>
+                        <li><strong style="color:var(--text-primary)">多维度评估</strong>：目标达成、互动质量、节奏与表达等维度综合评分</li>
+                    </ul>
+                </div>
+                <div class="ai-panel-cta">
+                    <a class="sf-cta-btn" href="https://alyssa9000.github.io/AI-Quality/" target="_blank" rel="noopener noreferrer">
+                        <span>查看 AI 授课分析完整解决方案</span>
+                        <span class="sf-cta-arrow">→</span>
+                    </a>
+                </div>
             </div>
             <div class="ai-panel fade-in stagger-1">
                 <div class="ai-panel-title">AI教学风险监控系统</div>
